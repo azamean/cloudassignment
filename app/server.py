@@ -1,3 +1,4 @@
+# Marcus O'Byrne C15519493
 from flask import Flask, Response, render_template, request
 import json
 from subprocess import Popen, PIPE
@@ -30,7 +31,7 @@ def index():
            <br> DELETE /images                      Delete all images """
 
 
-# run docker commands in shell
+# run docker commands in the shell
 def docker(*args):
 
     cmd = ['docker']
@@ -41,9 +42,8 @@ def docker(*args):
     process = Popen(cmd, stdout=PIPE, stderr=PIPE)
 
     stdout, stderr = process.communicate()
-    
+
     error = stderr.decode('utf-8')
-    
     out = stdout.decode('utf-8')
 
     if error.startswith('Error'):
@@ -285,6 +285,13 @@ def images_remove_all():
 
     resp = json.dumps(idS)
 
+    return Response(response=resp, mimetype="application/json")
+
+
+@app.route('/services', methods=['GET'])
+def services_index():
+    output = docker('service', 'ls')
+    resp = json.dumps(docker_services_to_array(output))
     return Response(response=resp, mimetype="application/json")
 
 
